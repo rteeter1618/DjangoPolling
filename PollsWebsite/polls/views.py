@@ -32,6 +32,14 @@ def detail(request, question_id):
 def results(request, question_id):
 
     question = get_object_or_404(Question, pk=question_id)
+    totalNum = 0
+    for choice in question.choice_set.all():
+        totalNum+=choice.votes
+    
+    for choice in question.choice_set.all():
+        choice.percent = F("votes") * 100 / totalNum
+        choice.save()
+
     return render(request, "polls/results.html", {"question" : question})
 
 

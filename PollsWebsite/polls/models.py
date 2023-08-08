@@ -21,6 +21,10 @@ class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
+    percent = models.FloatField(default=0)
 
     def __str__(self) -> str:
         return self.choice_text
+    
+    def setPercent(self, num):
+        self.percent = num
