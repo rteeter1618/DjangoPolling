@@ -6,7 +6,8 @@ from django.db import models
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField("Date published")
+    pub_date = models.DateTimeField("Date published", default=timezone.now())
+    total_votes = models.IntegerField(default=0)
 
     #default way to display
     def __str__(self) -> str:
@@ -25,6 +26,4 @@ class Choice(models.Model):
 
     def __str__(self) -> str:
         return self.choice_text
-    
-    def setPercent(self, num):
-        self.percent = num
+

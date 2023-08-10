@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Site</title>
+    
+    {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    {% block head %}
+    {% endblock head %}
+</head>
+<body>
+    <!--Navigation bar-->
+    <ul class="navBar">
+        <li class="navBar"><a class="navBar" href={% url "polls:index"%}>Home</a></li>
+        <li class="navBar"><a class="navBar" href={% url "polls:allResults"%}>Results</a></li>
+        <li class="navBar"><a class="navBar" href={% url "polls:addQuestion"%}>Add Question</a></li>
+        <!--Add questions-->
+    </ul>
+
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>

@@ -14,8 +14,7 @@ from django.template import loader
 
 
 def index(request):
-    #gets the first 5 objects from the database
-    latest_question_list = Question.objects.order_by("-pub_date")[:5]
+    latest_question_list = Question.objects.order_by("-total_votes")
     context = {"latest_question_list": latest_question_list}
     #Uses the html template string given, passing context so template can access
     #returns httpresponse with that template
@@ -30,7 +29,6 @@ def detail(request, question_id):
 
 
 def results(request, question_id):
-
     question = get_object_or_404(Question, pk=question_id)
     totalNum = 0
     for choice in question.choice_set.all():
@@ -39,8 +37,15 @@ def results(request, question_id):
     for choice in question.choice_set.all():
         choice.percent = F("votes") * 100 / totalNum
         choice.save()
+    
+    question.total_votes = totalNum
+    question.save()
 
     return render(request, "polls/results.html", {"question" : question})
+
+def allResults(request):
+    question_list = Question.objects.order_by("-total_votes")
+    return render(request, "polls/allResults.html", {"question_list": question_list})
 
 
 def vote(request, question_id):
@@ -66,3 +71,20 @@ def vote(request, question_id):
     #return HttpResponseRedirect after dealing with post data, so that it is not double updated if user hits back
     #redirects to given url, reverse constructs that url using urls.py
     return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
+
+def addQuestion(request):
+    return render(request, "polls/addQuestion.html")
+
+def addQuestionUpdater(request):
+    questionName = request.POST["qname"]
+    numQuestions = Question.objects.count()
+    newQuestion = Question(question_text = questionName)
+    newQuestion.save()
+
+    #collecting all the elements whose name start with option ie option0/1...
+    choiceList = [token for token in request.POST if token.startswith("option")]
+    for choice in choiceList:
+        newChoice = Choice(choice_text = request.POST[choice], question = newQuestion)
+        newChoice.save()
+
+    return HttpResponseRedirect(reverse("polls:index"))

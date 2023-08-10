@@ -1,0 +1,39 @@
+{% extends 'polls/base.html' %}
+
+{% block content %}
+
+<h1 id="title">Add your own question</h1>
+
+<form action = "{% url 'polls:addQuestionUpdater' %}" method="post">
+    {% csrf_token %}
+    <label for="qname" style="margin: 10px;">Question: </label>
+    <input type="text" name="qname">
+    <div style="margin: 40px;">
+        <p>Options: </p>
+        <ul  id="options" name="options">
+            
+        </ul>
+        <button type="button" onclick="addOption()">Add option</button>
+    </div>
+    <input type="submit" value="Save Question">
+</form>
+
+<script>
+    window.onload = function() {
+        addOption();
+    }
+
+    function addOption() {
+        var options = document.getElementById("options");
+        var input = document.createElement("input");
+        input.type = "text";
+        var num = options.childElementCount;
+        input.name="option" + num;
+        var inputLi = document.createElement("li");
+        inputLi.className="mainList"
+        inputLi.appendChild(input);
+        options.appendChild(inputLi);
+    }
+</script>
+{% endblock content %}
+
